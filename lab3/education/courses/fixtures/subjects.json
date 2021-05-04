@@ -1,0 +1,18 @@
+[
+{
+    "model": "courses.subject",
+    "pk": 1,
+    "fields": {
+        "title": "Programming tools and utilities",
+        "slug": "ptu"
+    }
+},
+{
+    "model": "courses.subject",
+    "pk": 2,
+    "fields": {
+        "title": "Philosophy",
+        "slug": "philosophy"
+    }
+}
+]
