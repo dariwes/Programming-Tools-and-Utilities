@@ -136,7 +136,7 @@ ol {
 	right: 0;
 	height: 13px;
 	width: 83px;
-	background-image: url(../img/line.png);
+	/*background-image: url(../img/line.png);*/
 	content: "";
 	margin: 0 auto;
 }
@@ -2000,7 +2000,7 @@ ol {
 	position: absolute;
 	left: 0;
 	top: 3px;
-	background-image: url(../img/categories/single-post/quote-left.png);
+	/*background-image: url(../img/categories/single-post/quote-left.png);*/
 	height: 55px;
 	width: 55px;
 	content: "";
