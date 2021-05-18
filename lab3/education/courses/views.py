@@ -1,51 +1,43 @@
 from django.views.generic.list import ListView
-from .models import Course
+from .models import Course, Subject
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.shortcuts import redirect, get_object_or_404
-from django.views.generic.base import TemplateResponseMixin, View
+from django.shortcuts import redirect, get_object_or_404, render
+from django.views.generic.base import TemplateResponseMixin, View, TemplateView
 from .forms import ModuleFormSet
 from django.forms.models import modelform_factory
 from django.apps import apps
 from .models import Module, Content
+from django.db.models import Count
+from django.views.generic.detail import DetailView
+from users.forms import CourseRegistrationForm
 
 
-# можно применять для любого обработчика,
-# который работает с моделью, содержащей поле owner
 class OwnerMixin:
-    # получать только те объекты,
-    # владельцем которых является текущий пользователь (request.user)
     def get_queryset(self):
-        qs = super(OwnerMixin, self).get_queryset()
+        qs = super().get_queryset()
         return qs.filter(owner=self.request.user)
 
 
 class OwnerEditMixin:
-    # автоматически заполнять поле owner сохраняемого объекта.
     def form_valid(self, form):
         form.instance.owner = self.request.user
-        return super(OwnerEditMixin, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class OwnerCourseMixin(OwnerMixin, LoginRequiredMixin):
-    # модель, с которой работает обработчик
     model = Course
     fields = ['subject', 'title', 'slug', 'overview']
     success_url = reverse_lazy('manage_course_list')
 
 
 class OwnerCourseEditMixin(OwnerCourseMixin):
-    # поля модели, из которых будет формироваться объект
-    # обработчиками CreateView и UpdateView
     fields = ['subject', 'title', 'slug', 'overview']
-    # адрес, на который пользователь будет перенаправлен
-    # после успешной обработки формы классами CreateView и UpdateView
     success_url = reverse_lazy('manage_course_list')
     template_name = 'courses/manage/course/form.html'
 
 
-# список курсов, созданных пользователем
 class ManageCourseListView(ListView):
     model = Course
     template_name = 'courses/manage/course/list.html'
@@ -59,7 +51,6 @@ class CourseCreateView(OwnerCourseEditMixin,
                        OwnerEditMixin,
                        CreateView,
                        PermissionRequiredMixin):
-    # проверка наличия у пользователя разрешения
     permission_required = 'courses.add_course'
 
 
@@ -81,7 +72,6 @@ class CourseModuleUpdateView(TemplateResponseMixin, View):
     template_name = 'courses/manage/module/formset.html'
     course = None
 
-    # отвечает за формирование набора форм
     def get_formset(self, data=None):
         return ModuleFormSet(instance=self.course,
                              data=data)
@@ -123,11 +113,11 @@ class ContentCreateUpdateView(TemplateResponseMixin, View):
         return None
 
     def get_form(self, model, *args, **kwargs):
-        Form = modelform_factory(model, exclude=['owner',
+        form_ = modelform_factory(model, exclude=['owner',
                                                  'order',
                                                  'created',
                                                  'updated'])
-        return Form(*args, **kwargs)
+        return form_(*args, **kwargs)
 
     def dispatch(self, request, module_id, model_name, id=None):
         self.module = get_object_or_404(Module,
@@ -181,3 +171,46 @@ class ContentDeleteView(View):
         content.delete()
         return redirect('module_content_list',
                         module.id)
+
+
+class ModuleContentListView(TemplateResponseMixin, View):
+    template_name = 'courses/manage/module/content_list.html'
+
+    def get(self, request, module_id):
+        module = get_object_or_404(Module,
+                                   id=module_id,
+                                   course__owner=request.user)
+        return self.render_to_response({'module': module})
+
+
+class CourseListView(TemplateResponseMixin, View):
+    model = Course
+    template_name = 'courses/course/list.html'
+
+    def get(self, request, subject=None):
+        subjects = Subject.objects.annotate(
+            total_courses=Count('courses')
+        )
+        courses = Course.objects.annotate(
+            total_modules=Count('modules')
+        )
+        if subject:
+            subject = get_object_or_404(Subject,
+                                        slug=subject)
+            courses = courses.filter(subject=subject)
+        return self.render_to_response({'subjects': subjects,
+                                        'subject': subject,
+                                        'courses': courses})
+
+
+class CourseDetailView(DetailView):
+    model = Course
+    template_name = 'courses/course/detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['registration_form'] = CourseRegistrationForm(
+            initial={'course': self.object})
+        return context
+
+

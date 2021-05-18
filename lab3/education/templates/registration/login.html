@@ -1,21 +1,36 @@
-{% extends "base.html" %}
-{% load static %}
-{% block title %}Log-in{% endblock %}
+{% extends "../base.html" %}
+{% block title %}Вход{% endblock %}
 {% block content %}
-<h1>Log-in</h1>
-<div class="module">
-    {% if form.errors %}
-        <p>Your username and password didn't match. Please try again.</p>
-    {% else %}
-        <p>Please, use the following form to log-in:</p>
-    {% endif %}
-        <div class="login-form">
+    <main class="container login">
+        <h1>Вход</h1>
+        <main class="form-signin">
+            {% if form.errors %}
+                <p>Не правильно введен пароль или имя пользователя, попробуй еще раз</p>
+            {% endif %}
+        <div class="form-floating">
             <form action="{% url 'login' %}" method="post">
-                {{ form.as_p }}
                 {% csrf_token %}
-                <input type="hidden" name="next" value="{{ next }}" />
-                <p><input type="submit" value="Log-in"></p>
-            </form>
-        </div>
-</div>
+                <div class="col-md-15 col-md-offset-2">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        {% if error_message %}
+                            <p class="bg-danger p-d ml-b">{{ error_message }}</p>
+                        {% endif %}
+                            <div class="form-floating">
+                                <input name="username" value="" type="text" class="form-control" id="floatingInput" placeholder="Username"/>
+                                <label for="floatingInput">Username</label>
+                            </div>
+                            <div class="form-floating">
+                                <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password"/>
+                                <label for="floatingPassword">Password</label>
+                            </div>
+                        <input type="hidden" name="next" value="{{ next }}" class="form-control" id="floatingInput"/>
+                        <p><input type="submit" class="w-100 btn btn-lg btn-secondary" value="Войти"></p>
+                     </div>
+                </div>
+            </div>
+                    </form>
+                </div>
+        </main>
+        </main>
 {% endblock %}

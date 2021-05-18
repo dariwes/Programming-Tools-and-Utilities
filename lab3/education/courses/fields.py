@@ -12,12 +12,9 @@ class OrderField(models.PositiveIntegerField):
             try:
                 query_set = self.model.objects.all()
                 if self.for_fields:
-                    # Фильтруем объекты с такими же значениями полей,
-                    # перечисленных в "for_fields".
                     query = {field: getattr(model_instance, field)\
                              for field in self.for_fields}
                     query_set = query_set.filter(**query)
-                # Получаем заказ последнего объекта.
                 last_item = query_set.latest(self.attname)
                 value = last_item.order + 1
             except ObjectDoesNotExist:

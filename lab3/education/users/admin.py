@@ -1,12 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import UserProfile
-from .forms import UserCreationFormProfile, UserChangeFormProfile
+from .forms import UserProfileCreationForm, UserProfileChangeForm
 
 
 class UserAdminProfile(UserAdmin):
-    add_form = UserCreationFormProfile
-    form = UserChangeFormProfile
+    add_form = UserProfileCreationForm
+    form = UserProfileChangeForm
     list_display = ['email', 'username', 'age']
     model = UserProfile
 

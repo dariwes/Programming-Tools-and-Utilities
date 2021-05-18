@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from .fields import OrderField
+from users.models import UserProfile
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 
 
 class Subject(models.Model):
@@ -10,6 +13,8 @@ class Subject(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
 
     class Meta:
+        verbose_name = 'Предмет'
+        verbose_name_plural = 'Предметы'
         ordering = ['title']
 
     def __str__(self):
@@ -17,7 +22,7 @@ class Subject(models.Model):
 
 
 class Course(models.Model):
-    owner = models.ForeignKey(User,
+    owner = models.ForeignKey(UserProfile,
                               related_name='courses_created',
                               on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject,
@@ -27,8 +32,13 @@ class Course(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     overview = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
+    users = models.ManyToManyField(UserProfile,
+                                  related_name='courses_joined',
+                                  blank=True)
 
     class Meta:
+        verbose_name = 'Курс'
+        verbose_name_plural = 'Курсы'
         ordering = ['-created']
 
     def __str__(self):
@@ -44,6 +54,8 @@ class Module(models.Model):
     order = OrderField(blank=True, for_fields=['course'])
 
     class Meta:
+        verbose_name = 'Модуль'
+        verbose_name_plural = 'Модули'
         ordering = ['order']
 
     def __str__(self):
@@ -63,15 +75,16 @@ class Content(models.Model):
                                      })
     object_id = models.PositiveIntegerField()
     item = GenericForeignKey('content_type', 'object_id')
-    # порядковые номера объектов будут задаваться в рамках одного модуля
     order = OrderField(blank=True, for_fields=['module'])
 
     class Meta:
+        verbose_name = 'Материал'
+        verbose_name_plural = 'Материалы'
         ordering = ['order']
 
 
 class ItemBase(models.Model):
-    owner = models.ForeignKey(User,
+    owner = models.ForeignKey(UserProfile,
                               related_name='%(class)s_related',
                               on_delete=models.CASCADE)
     title = models.CharField(max_length=250)
@@ -83,6 +96,12 @@ class ItemBase(models.Model):
 
     def __str__(self):
         return self.title
+
+    def render(self):
+        return render_to_string(
+            'courses/content/{}.html'.format(self._meta.model_name),
+            {'item': self}
+        )
 
 
 class Text(ItemBase):

@@ -3,16 +3,16 @@
     "model": "courses.subject",
     "pk": 1,
     "fields": {
-        "title": "Programming tools and utilities",
-        "slug": "ptu"
+        "title": "Python",
+        "slug": "python"
     }
 },
 {
     "model": "courses.subject",
     "pk": 2,
     "fields": {
-        "title": "Philosophy",
-        "slug": "philosophy"
+        "title": "Философия",
+        "slug": "filosofiya"
     }
 }
 ]
