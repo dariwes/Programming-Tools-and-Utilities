@@ -4,11 +4,11 @@ from .models import UserProfile
 from .forms import UserProfileCreationForm, UserProfileChangeForm
 
 
-class UserAdminProfile(UserAdmin):
+class UserProfileAdmin(UserAdmin):
     add_form = UserProfileCreationForm
     form = UserProfileChangeForm
-    list_display = ['email', 'username', 'age']
+    list_display = ['email', 'username', 'age', 'is_teacher']
     model = UserProfile
 
 
-admin.site.register(UserProfile, UserAdminProfile)
+admin.site.register(UserProfile, UserProfileAdmin)

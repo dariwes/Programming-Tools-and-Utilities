@@ -35,6 +35,9 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('users/', include('django.contrib.auth.urls')),
     path('api/', include('courses.api.urls', namespace='api')),
+    path('api/drf/auth/', include('rest_framework.urls')),
+    # path('api/djoser/auth/', include('djoser.urls')),
+    # path('api/djoser/authtoken/', include('djoser.urls.authtoken')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 

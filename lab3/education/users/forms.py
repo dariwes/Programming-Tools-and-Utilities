@@ -5,9 +5,11 @@ from courses.models import Course
 
 
 class UserProfileCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
     class Meta(UserCreationForm.Meta):
         model = UserProfile
-        fields = ('username', 'email', 'age')
+        fields = ('username', 'email', 'age', 'is_teacher')
 
 
 class UserProfileChangeForm(UserChangeForm):

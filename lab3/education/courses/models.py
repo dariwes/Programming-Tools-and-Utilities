@@ -9,7 +9,7 @@ from django.utils.safestring import mark_safe
 
 
 class Subject(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
 
     class Meta:
@@ -28,13 +28,13 @@ class Course(models.Model):
     subject = models.ForeignKey(Subject,
                                 related_name='courses',
                                 on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
     overview = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     users = models.ManyToManyField(UserProfile,
-                                  related_name='courses_joined',
-                                  blank=True)
+                                   related_name='courses_joined',
+                                   blank=True)
 
     class Meta:
         verbose_name = 'Курс'
@@ -107,10 +107,20 @@ class ItemBase(models.Model):
 class Text(ItemBase):
     content = models.TextField()
 
+    class Meta:
+        verbose_name = 'Информация'
+
 
 class File(ItemBase):
     file = models.FileField(upload_to='files')
 
+    class Meta:
+        verbose_name = 'Файл'
+        verbose_name_plural = 'Файлы'
+
 
 class Video(ItemBase):
     url = models.URLField()
+
+    class Meta:
+        verbose_name = 'Видео'
