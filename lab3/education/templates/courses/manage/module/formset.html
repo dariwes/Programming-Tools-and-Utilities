@@ -1,14 +1,14 @@
-{% extends "base.html" %}
+{% extends "../../../base.html" %}
 {% block title %}
-Edit "{{ course.title }}"
+Редактирование "{{ course.title }}"
 {% endblock %}
 
 {% block content %}
     <h1>
-        Edit "{{ course.title }}"
+        Редактировать "{{ course.title }}"
     </h1>
     <div class="module">
-        <h2>Course modules</h2>
+        <h2>Модули курса</h2>
         <form action="" method="post">
             {{ formset }}
             {{ formset.management_form }}

@@ -1,0 +1,93 @@
+/*.custom {*/
+/*    color:#007bff;*/
+/*    background:#000000;*/
+/*    font-size:20px;*/
+/*}*/
+body {
+    /*background: #1a4145;*/
+    background: #1a4145 url("../img/fllow.JPG");
+    color: #d7c8ae;
+    font-family: "DejaVu Sans Mono", sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+aside {
+    float: right;
+    background: rgba(69,95,95, 0.5);
+    width: 19%;
+    padding: 2%;
+    height: 23vh;
+    color: #b7eedd;
+    border: 3px solid #d7c8ae;
+}
+
+aside img {
+    width: 30px;
+    float: top;
+}
+
+aside .logo {
+    font-size: 20px;
+    margin-right: 3px;
+    font-weight: bold;
+    color: #e3d6bc;
+    position: relative;
+    top: -20px;
+    text-decoration: none;
+    transition: all .6s ease;
+}
+
+aside ul {
+    list-style: none;
+    position: relative;
+    left: 20px;
+    top: -20px;
+}
+
+aside ul li a {
+    color: #c4b497;
+    display: block;
+    margin-top: 20px;
+    text-decoration: none;
+    transition: transform .6s ease;
+}
+
+aside ul li a:hover, .logo:hover {
+    color: #92cfc7;
+    text-decoration: #92cfc7;
+    margin-top: 20px;
+    transform: scale(1.05);
+}
+
+.login {
+    border: 3px solid #d7c8ae;
+    max-width: 500px;
+    padding-block: 200px;
+    color: #d7c8ae;
+    background-color: rgba(69,95,95, 0.5);
+}
+/*main .form-signin {*/
+/*  width: 100%;*/
+/*  max-width: 330px;*/
+/*  padding: 15px;*/
+/*  margin: auto;*/
+/*}*/
+
+/*main .form-signin {*/
+/*    color: #c4b497;*/
+/*    margin-top: 50px;*/
+/*}*/
+/*main .form-signin h1 {*/
+/*    color: #c4b497;*/
+/*}*/
+/*form {*/
+/*    top: -20px;*/
+/*    width: 100%;*/
+/*    !*max-width: 330px;*!*/
+/*    padding: 15px;*/
+/*    margin: auto;*/
+/*    box-sizing: border-box;*/
+/*    display: block;*/
+/*    border: 3px solid #d7c8ae;*/
+/*    background-color: #455f5f;*/
+/*    color: #d7c8ae;*/
+/*}*/

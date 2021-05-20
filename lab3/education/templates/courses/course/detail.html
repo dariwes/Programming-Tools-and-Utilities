@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %} {{ object.title }} {% endblock %}
+{% block content %}
+    {% with subject=course.subject %}
+        <h1>{{ object.title }}</h1>
+        <div class="module">
+            <h2>Описание</h2>
+            <p>
+                <a href="{% url 'course_list_subject' subject.slug %}">{{ subject.title }}</a>.
+                {{ course.modules.count }} модулей. Преподаватель: {{ course.owner }}
+            </p>
+            {{ object.overview|linebreaks }}
+            {% if request.user.is_authenticated %}
+                <form action="{% url 'user_course_registration' %}" method="post">
+                    {{ registration_form }} {% csrf_token %}
+                    <input type="submit" class="button" value="Пройти курс!">
+                </form>
+            {% else %}
+                <a href="{% url 'signup' %}" class="button">Зарегистрируйтесь, чтобы пройти курс</a>
+            {% endif %}
+        </div>
+    {% endwith %}
+{% endblock %}
