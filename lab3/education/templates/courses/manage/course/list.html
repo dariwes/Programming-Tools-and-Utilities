@@ -1,27 +1,31 @@
 {% extends "../../../base.html" %}
 {% block title %}Мои курсы{% endblock %}
 {% block content %}
-    <h1>Мои курсы</h1>
-    <div class="module">
+    <div class="container p-4 m-4 text-center">
+        <p class="fa-4x"><strong>Мои курсы</strong></p>
         {% for course in object_list %}
-            <div class="course-info">
-                <h3>{{ course.title }}</h3>
-                <p>
-                    <a href="{% url 'course_edit' course.id %}">Редактировать курс</a>
-                    <a href="{% url 'course_delete' course.id %}">Удалить</a>
-                    <a href="{% url 'course_module_update' course.id %}">Редактировать модуль</a>
-                    {% if course.modules.count > 0 %}
-                        <a href="{% url 'module_content_list' course.modules.first.id %}">
-                            Управление
-                        </a>
-                    {% endif %}
-                </p>
+            <hr>
+            <div class="row">
+                <div class="col-4">
+                    <div class="container p-1 m-2 bg-dark rounded">
+                        <h3>{{ course.title }}</h3>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div class="container px-50 py-1 m-2 bg-dark rounded">
+                            <a class="fs-4" href="{% url 'course_edit' course.id %}">Редактировать курс</a><hr>
+                            <a class="fs-4" href="{% url 'course_delete' course.id %}">Удалить</a><hr>
+                            {% if course.modules.count > 0 %}
+                                <a class="fs-4" href="{% url 'module_content_list' course.modules.first.id %}">Управление</a>
+                            {% else %}
+                                <a class="fs-4" href="{% url 'course_module_update' course.id %}">Редактировать модуль</a>
+                            {% endif %}
+                    </div>
+                </div>
             </div>
         {% empty %}
-            <p>Курсов пока что нет:(</p>
+            <p class="fa-2x">Курсов пока что нет:(</p>
         {% endfor %}
-        <p>
-            <a href="{% url 'course_create' %}" class="button">Создать новый курс</a>
-        </p>
+            <a href="{% url 'course_create' %}" class="btn btn-lg btn-primary fa-2x">Создать новый курс</a>
     </div>
 {% endblock %}

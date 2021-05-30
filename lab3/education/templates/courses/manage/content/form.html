@@ -12,19 +12,23 @@
         {% if object %}
             Редактировать содержание "{{ object.title }}"
         {% else %}
-            Добавить новый материал
+            <p class="text-center fa-1x"><strong>Добавить новый материал</strong></p>
         {% endif %}
     </h1>
-    <div class="module">
+    <div class="container text-center m-5">
+        <div class="row justify-content-center">
+            <div class="col-6 bg-dark p-3 rounded">
         <h2>
-            Информация о курсе
-        </h2>
+            Информация
+        </h2><hr>
         <form action="" method="post" enctype="multipart/form-data">
             {{ form.as_p }}
             {% csrf_token %}
-            <p>
-                <input type="submit" value="Save content">
+            <p class="text-center">
+                <input class="btn btn-lg btn-primary" type="submit" value="Сохранить">
             </p>
         </form>
+            </div>
+    </div>
     </div>
 {% endblock %}

@@ -9,13 +9,20 @@ class UserProfileCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = UserProfile
-        fields = ('username', 'email', 'age', 'is_teacher')
+        fields = ('username',
+                  'email',
+                  'age',
+                  'is_teacher',
+                  'image')
 
 
 class UserProfileChangeForm(UserChangeForm):
     class Meta:
         model = UserProfile
-        fields = ('username', 'email', 'age')
+        fields = ('username',
+                  'email',
+                  'age',
+                  'image')
 
 
 class CourseRegistrationForm(forms.Form):

@@ -7,7 +7,11 @@ from .forms import UserProfileCreationForm, UserProfileChangeForm
 class UserProfileAdmin(UserAdmin):
     add_form = UserProfileCreationForm
     form = UserProfileChangeForm
-    list_display = ['email', 'username', 'age', 'is_teacher']
+    list_display = ('email',
+                    'username',
+                    'age',
+                    'is_teacher',
+                    'image')
     model = UserProfile
 
 
