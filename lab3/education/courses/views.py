@@ -1,3 +1,5 @@
+import logging
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
 from .models import Course, Subject
 from django.urls import reverse_lazy
@@ -12,37 +14,21 @@ from .models import Module, Content
 from django.db.models import Count
 from django.views.generic.detail import DetailView
 from users.forms import CourseRegistrationForm
+from .mixins import OwnerCourseEditMixin, OwnerEditMixin, OwnerCourseMixin, OwnerMixin
 
-
-class OwnerMixin:
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(owner=self.request.user)
-
-
-class OwnerEditMixin:
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
-
-
-class OwnerCourseMixin(OwnerMixin, LoginRequiredMixin):
-    model = Course
-    fields = ['subject', 'title', 'slug', 'overview']
-    success_url = reverse_lazy('manage_course_list')
-
-
-class OwnerCourseEditMixin(OwnerCourseMixin):
-    fields = ['subject', 'title', 'slug', 'overview']
-    success_url = reverse_lazy('manage_course_list')
-    template_name = 'courses/manage/course/form.html'
+logger = logging.getLogger(__name__)
+message_ = '| user: %s | used: %s | method: %s'
 
 
 class ManageCourseListView(ListView):
     model = Course
+    # model = Module
     template_name = 'courses/manage/course/list.html'
 
     def get_queryset(self):
+        logger.info(message_ % (f'{self.request.user}',
+                                f'{self.__class__.__name__}',
+                                'get_queryset'))
         qs = super().get_queryset()
         return qs.filter(owner=self.request.user)
 
@@ -73,16 +59,27 @@ class CourseModuleUpdateView(TemplateResponseMixin, View):
     course = None
 
     def get_formset(self, data=None):
+        logger.info(message_ % (f'{self.request.user}',
+                                f'{self.__class__.__name__}',
+                                'get_queryset'))
         return ModuleFormSet(instance=self.course,
                              data=data)
 
     def dispatch(self, request, pk):
-        self.course = get_object_or_404(Course,
-                                        id=pk,
-                                        owner=request.user)
+        logger.info(message_ % (f'{self.request.user}',
+                                f'{self.__class__.__name__}',
+                                'dispatch'))
+        try:
+            self.course = Course.objects.get(id=pk,
+                                             owner=request.user)
+        except Course.DoesNotExist:
+            logger.warning('')
         return super().dispatch(request, pk)
 
     def get(self, request, *args, **kwargs):
+        logger.info(message_ % (f'{self.request.user}',
+                                f'{self.__class__.__name__}',
+                                'get'))
         formset = self.get_formset()
         return self.render_to_response(
             {'course': self.course,
@@ -90,10 +87,14 @@ class CourseModuleUpdateView(TemplateResponseMixin, View):
         )
 
     def post(self, request, *args, **kwargs):
+        logger.info(message_ % (f'{self.request.user}',
+                                f'{self.__class__.__name__}',
+                                'post'))
         formset = self.get_formset(data=request.POST)
         if formset.is_valid():
             formset.save()
             return redirect('manage_course_list')
+        logger.warning(f'user: {self.request.user} | form is not valid')
         return self.render_to_response(
             {'course': self.course,
              'formset': formset}
@@ -106,31 +107,32 @@ class ContentCreateUpdateView(TemplateResponseMixin, View):
     obj = None
     template_name = 'courses/manage/content/form.html'
 
-    def get_model(self, model_name):
-        if model_name in ['text', 'video', 'file']:
-            return apps.get_model(app_label='courses',
-                                  model_name=model_name)
-        return None
-
-    def get_form(self, model, *args, **kwargs):
-        form_ = modelform_factory(model, exclude=['owner',
-                                                  'order',
-                                                  'created',
-                                                  'updated'])
-        return form_(*args, **kwargs)
-
     def dispatch(self, request, module_id, model_name, id=None):
-        self.module = get_object_or_404(Module,
-                                        id=module_id,
-                                        course__owner=request.user)
+        logger.info(message_ % (f'{self.request.user}',
+                                f'{self.__class__.__name__}',
+                                'dispatch'))
+        try:
+            self.module = Module.objects.get(id=module_id,
+                                             course__owner=request.user)
+        except Module.DoesNotExist:
+            logger.warning(f'user: {self.request.user} | '
+                           f'no {self.model} matches the given query')
+            return HttpResponse(status=400)
         self.model = self.get_model(model_name)
         if id:
-            self.obj = get_object_or_404(self.model,
-                                         id=id,
-                                         owner=request.user)
+            try:
+                self.obj = self.model.objects.get(id=id,
+                                                  owner=request.user)
+            except self.model.DoesNotExist:
+                logger.warning(f'user: {self.request.user} | '
+                               f'no {self.model} matches the given query')
+                return HttpResponse(status=400)
         return super().dispatch(request, module_id, model_name, id)
 
     def get(self, request, module_id, model_name, id=None):
+        logger.info(message_ % (f'{self.request.user}',
+                                f'{self.__class__.__name__}',
+                                'get'))
         form = self.get_form(self.model,
                              instance=self.obj)
         return self.render_to_response(
@@ -139,6 +141,9 @@ class ContentCreateUpdateView(TemplateResponseMixin, View):
         )
 
     def post(self, request, module_id, model_name, id=None):
+        logger.info(message_ % (f'{self.request.user}',
+                                f'{self.__class__.__name__}',
+                                'post'))
         form = self.get_form(self.model,
                              instance=self.obj,
                              data=request.POST,
@@ -152,32 +157,63 @@ class ContentCreateUpdateView(TemplateResponseMixin, View):
                                        item=obj)
             return redirect('module_content_list',
                             self.module.id)
+        logger.warning(f'user: {self.request.user} | form is not valid')
         return self.render_to_response(
             {'form': form,
              'object': self.obj}
         )
 
+    @staticmethod
+    def get_model(model_name):
+        if model_name in ['text', 'video', 'file']:
+            return apps.get_model(app_label='courses',
+                                  model_name=model_name)
+        logger.warning(f'model {model_name} does not exist')
+        return None
+
+    @staticmethod
+    def get_form(model, *args, **kwargs):
+        form_ = modelform_factory(model, exclude=['owner',
+                                                  'order',
+                                                  'created',
+                                                  'updated'])
+        return form_(*args, **kwargs)
+
 
 class ContentDeleteView(View):
     def post(self, request, id):
-        content = get_object_or_404(Content,
-                                    id=id,
-                                    module__course__owner=request.user)
+        try:
+            content = Content.objects.get(id=id,
+                                          module__course__owner=request.user)
+        except Content.DoesNotExist:
+            logger.info(message_ % (f'{self.request.user}',
+                                    f'{self.__class__.__name__}',
+                                    'post'))
+            return HttpResponse('Error', status=404)
+        logger.info(message_ % (f'{self.request.user}',
+                                f'{self.__class__.__name__}',
+                                'post'))
         module = content.module
         content.item.delete()
         content.delete()
-        return redirect('module_content_list',
-                        module.id)
+        return redirect('module_content_list', module.id)
 
 
 class ModuleContentListView(TemplateResponseMixin, View):
     template_name = 'courses/manage/module/content_list.html'
 
     def get(self, request, module_id):
-        module = get_object_or_404(Module,
-                                   id=module_id,
-                                   course__owner=request.user)
-        return self.render_to_response({'module': module})
+        try:
+            module = Module.objects.get(id=module_id,
+                                        course__owner=request.user)
+            logger.info(message_ % (f'{self.request.user}',
+                                    f'{self.__class__.__name__}',
+                                    'get'))
+            return self.render_to_response({'module': module})
+        except Module.DoesNotExist:
+            logger.warning(f'user: {self.request.user} | '
+                           f'no {Module} matches the given query')
+            return HttpResponseRedirect('course_list')
 
 
 class CourseListView(TemplateResponseMixin, View):
@@ -185,17 +221,24 @@ class CourseListView(TemplateResponseMixin, View):
     template_name = 'courses/course/list.html'
 
     def get(self, request, subject=None):
-        subjects = Subject.objects.annotate(
-            total_courses=Count('courses')
-        )
+        logger.info(message_ % (f'{self.request.user}',
+                                f'{self.__class__.__name__}',
+                                'get'))
+        # subjects = Subject.objects.annotate(
+        #     total_courses=Count('courses')
+        # )
         courses = Course.objects.annotate(
             total_modules=Count('modules')
         )
         if subject:
-            subject = get_object_or_404(Subject,
-                                        slug=subject)
-            courses = courses.filter(subject=subject)
-        return self.render_to_response({'subjects': subjects,
+            try:
+                subject = Subject.objects.get(slug=subject)
+                courses = courses.filter(subject=subject)
+            except Subject.DoesNotExist:
+                logger.warning(f'user: {self.request.user} | '
+                               f'no {subject} matches the given query')
+                return HttpResponse('Error', status=404)
+        return self.render_to_response({#'subjects': subjects,
                                         'subject': subject,
                                         'courses': courses})
 
@@ -205,6 +248,9 @@ class CourseDetailView(DetailView):
     template_name = 'courses/course/detail.html'
 
     def get_context_data(self, **kwargs):
+        logger.info(message_ % (f'{self.request.user}',
+                                f'{self.__class__.__name__}',
+                                'get_context_data'))
         context = super().get_context_data(**kwargs)
         context['registration_form'] = CourseRegistrationForm(
             initial={'course': self.object})
