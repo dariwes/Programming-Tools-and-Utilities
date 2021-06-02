@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block title %} {{ object.title }} {% endblock %}
 {% block content %}
-    <main class="container p-5">
+    <div class="container m-10 p-5 text-center">
     {% with subject=course.subject %}
         <div class="bg-dark p-5 rounded">
-            <h1><strong>{{ object.title }}</strong></h1>
+            <h1 class="text-center"><strong class="head-clr-green">{{ object.title }}</strong></h1>
             <p>
                 <a href="{% url 'course_list_subject' subject.slug %}">{{ subject.title }}</a>.
                 {{ course.modules.count }} модуль(ей). Преподаватель: {{ course.owner }}
@@ -20,5 +20,5 @@
             {% endif %}
         </div>
     {% endwith %}
-    </main>
+    </div>
 {% endblock %}

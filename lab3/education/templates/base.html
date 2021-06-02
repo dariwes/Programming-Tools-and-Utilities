@@ -11,43 +11,47 @@
     <title>{% block title %}Education{% endblock %}</title>
 </head>
 <body>
-    <header>
-      <div class="bg-dark collapse" id="navbarHeader" style="">
-        <div class="container">
-          <div class="row">
-              {% if request.user.is_authenticated %}
-                <div class="col-sm-8 col-md-7 py-4">
-                    {% if request.user.is_teacher %}
-                        <h4 class="text-white"><a href="{% url 'manage_course_list' %}"><strong>Мой аккаунт</strong></a></h4>
-                    {% else %}
-                        <h4 class="text-white"><a href="{% url 'user_course_list' %}"><strong>Мой аккаунт</strong></a></h4>
-                    {% endif %}
-                    <p class="">{{ user.username }}</p>
+    <header class="site-header sticky-top ">
+      <nav class="container-fluid d-flex flex-column flex-md-row justify-content-between bg-dark-nav">
+        <div class="container-lg mx-2">
+            {% if request.user.is_authenticated %}
+                <div class="row">
+                    <div class="col-7">
+                      <h3><strong><a href="/">
+                        Coursera<i class="fas fa-cannabis"></i>
+                      </a></strong></h3>
+                    </div>
+                    <div class="col-3">
+                        {% if request.user.is_teacher %}
+                            <h5 class="text-white"><a href="{% url 'manage_course_list' %}"><strong>Мой аккаунт</strong></a></h5>
+                        {% else %}
+                            <h5 class="text-white"><a href="{% url 'user_course_list' %}"><strong>Мой аккаунт</strong></a></h5>
+                        {% endif %}
+                    </div>
+                    <div class="col-2">
+                        <h5 class="text-white"><a href="{% url 'logout' %}"><strong><i class="fas fa-sign-out-alt"></i>Выйти</strong></a></h5>
+                    </div>
                 </div>
-                <div class="col-sm-4 offset-md-1 py-4">
-                  <h4 class="text-white"><a href="{% url 'logout' %}"><strong><i class="fas fa-sign-out-alt"></i>Выйти</strong></a></h4>
+            {% else %}
+                <div class="row">
+                    <div class="col-7">
+                          <a href="/">
+                            <h3><strong>Coursera<i class="fas fa-cannabis"></i></strong></h3>
+                          </a>
+                        </div>
+                     <div class="col-3">
+                        <h5 class="text-white"><a href="{% url 'signup' %}"><strong>Регистрация<i class="fas fa-user-plus"></i></strong></a></h5>
+                    </div>
+                    <div class="col-2">
+                        <h5 class="text-white"><a href="{% url 'login' %}"><strong>Войти<i class="fas fa-sign-in-alt"></i></strong></a></h5>
+                    </div>
                 </div>
-              {% else %}
-                  <div class="col-sm-8 col-md-7 py-4">
-                    <h4 class="text-white"><a href="{% url 'signup' %}"><strong><i class="fas fa-sign-in-alt"></i>Регистрация</strong></a></h4>
-                </div>
-                  <div class="col-sm-4 offset-md-1 py-4">
-                  <h4 class="text-white"><a href="{% url 'login' %}"><strong><i class="fas fa-sign-in-alt"></i>Войти</strong></a></h4>
-                </div>
-              {% endif %}
-          </div>
+            {% endif %}
         </div>
-      </div>
-      <div class="navbar navbar-dark bg-dark shadow-sm">
-        <div class="container">
-          <a href="/">
-            <h3><strong>Coursera<i class="fas fa-cannabis"></i></strong></h3>
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="true" aria-label="">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        </div>
-      </div>
+{#          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="true" aria-label="">#}
+{#            <span class="navbar-toggler-icon"></span>#}
+{#          </button>#}
+      </nav>
     </header>
 
     <div id="content">
