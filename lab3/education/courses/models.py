@@ -1,5 +1,4 @@
 from io import BytesIO
-
 from PIL import Image
 from django.core import files
 from django.db import models
@@ -103,6 +102,7 @@ class Content(models.Model):
                                      on_delete=models.CASCADE,
                                      limit_choices_to={
                                          'model__in': ('text',
+                                                       'picture',
                                                        'video',
                                                        'file')
                                      })
@@ -150,6 +150,14 @@ class File(ItemBase):
     class Meta:
         verbose_name = 'Файл'
         verbose_name_plural = 'Файлы'
+
+
+class Picture(ItemBase):
+    picture = models.FileField(upload_to='images')
+
+    class Meta:
+        verbose_name = 'Изображение'
+        verbose_name_plural = 'Изображения'
 
 
 class Video(ItemBase):

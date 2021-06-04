@@ -9,14 +9,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-x+2$!a-d1$@03!162zs)fq%=!e(eijiew6d)pibtl0nr7ky6*e'
-os.environ['SECRET_KEY'] = 'django-insecure-x+2$!a-d1$@03!162zs)fq%=!e(eijiew6d)pibtl0nr7ky6*e'
+# os.environ['SECRET_KEY'] = 'django-insecure-x+2$!a-d1$@03!162zs)fq%=!e(eijiew6d)pibtl0nr7ky6*e'
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-os.environ['DEBUG'] = 'True'
+# os.environ['DEBUG'] = 'True'
 DEBUG = bool(os.environ.get('DEBUG'))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
 
 
 # Application definition
@@ -31,7 +31,7 @@ INSTALLED_APPS = [
 
     'crispy_forms',
     'embed_video',
-    'djoser',
+    # 'djoser',
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
@@ -79,15 +79,26 @@ WSGI_APPLICATION = 'education.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default':
+#         {'ENGINE': 'django.db.backends.postgresql',
+#          'NAME': 'education',
+#          'USER': 'postgres',
+#          'PASSWORD': '15441544a',
+#          'HOST': 'localhost',
+#          'PORT': '5432',
+#          }
+# }
+
 DATABASES = {
-    'default':
-        {'ENGINE': 'django.db.backends.postgresql',
-         'NAME': 'education',
-         'USER': 'postgres',
-         'PASSWORD': '15441544a',
-         'HOST': 'localhost',
-         'PORT': '5432',
-         }
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
+    }
 }
 
 

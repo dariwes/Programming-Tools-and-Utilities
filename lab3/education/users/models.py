@@ -1,5 +1,4 @@
 from io import BytesIO
-
 from PIL import Image
 from django.core import files
 from django.db import models

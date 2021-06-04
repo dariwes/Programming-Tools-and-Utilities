@@ -1,5 +1,4 @@
 import logging
-
 from django.contrib.auth.models import Group
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
