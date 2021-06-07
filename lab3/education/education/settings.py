@@ -3,20 +3,15 @@ import os
 from django.urls import reverse_lazy
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))
-
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-x+2$!a-d1$@03!162zs)fq%=!e(eijiew6d)pibtl0nr7ky6*e'
-# os.environ['SECRET_KEY'] = 'django-insecure-x+2$!a-d1$@03!162zs)fq%=!e(eijiew6d)pibtl0nr7ky6*e'
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', "123")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# os.environ['DEBUG'] = 'True'
-DEBUG = bool(os.environ.get('DEBUG'))
+DEBUG = bool(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', "*").split(' ')
 
 
 # Application definition
@@ -79,17 +74,6 @@ WSGI_APPLICATION = 'education.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default':
-#         {'ENGINE': 'django.db.backends.postgresql',
-#          'NAME': 'education',
-#          'USER': 'postgres',
-#          'PASSWORD': '15441544a',
-#          'HOST': 'localhost',
-#          'PORT': '5432',
-#          }
-# }
-
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
@@ -139,22 +123,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.environ.get("STATIC_ROOT")
+MEDIA_ROOT = os.environ.get("MEDIA_ROOT")
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    BASE_DIR / "static",
+    '/var/www/static/',
 ]
 
-LOGIN_REDIRECT_URL = reverse_lazy('user_course_list')
 
-# LOGOUT_REDIRECT_URL = 'courses'
+LOGIN_REDIRECT_URL = reverse_lazy('user_course_list')
 
 LOGIN_URL = 'login'
 
 LOGOUT_URL = 'logout'
-
-MEDIA_URL = '/media/'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap'
 

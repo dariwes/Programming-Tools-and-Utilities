@@ -165,7 +165,7 @@ class ContentCreateUpdateView(TemplateResponseMixin, View):
 
     @staticmethod
     def get_model(model_name):
-        if model_name in ['text', 'video', 'file']:
+        if model_name in ('text', 'picture', 'video', 'file'):
             return apps.get_model(app_label='courses',
                                   model_name=model_name)
         logger.warning(f'model {model_name} does not exist')
@@ -173,10 +173,10 @@ class ContentCreateUpdateView(TemplateResponseMixin, View):
 
     @staticmethod
     def get_form(model, *args, **kwargs):
-        form_ = modelform_factory(model, exclude=['owner',
+        form_ = modelform_factory(model, exclude=('owner',
                                                   'order',
                                                   'created',
-                                                  'updated'])
+                                                  'updated'))
         return form_(*args, **kwargs)
 
 

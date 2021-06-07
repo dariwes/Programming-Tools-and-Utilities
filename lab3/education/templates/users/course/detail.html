@@ -5,7 +5,7 @@
       <div class="row">
         {% if object.modules.count > 0 %}
             <div class="col-4">
-                <div class="container bg-dark p-3 rounded m-3">
+                <div class="container bg-dark p-5 rounded m-3">
                     <h3><strong>Модули</strong></h3>
                     <ul id="modules">
                         {% for m in object.modules.all %}
@@ -19,7 +19,7 @@
                 </div>
             </div>
               <div class="col-8">
-                <div class="container bg-dark rounded m-3 p-3 text-center">
+                <div class="container bg-dark rounded m-3 p-5 text-center">
                 <h1> <strong> {{ module.title }} </strong></h1>
                 {% for content in module.contents.all %}
                     {% with item=content.item %}
