@@ -159,6 +159,11 @@ class Picture(ItemBase):
         verbose_name = 'Изображение'
         verbose_name_plural = 'Изображения'
 
+    def get_picture(self):
+        if self.picture:
+            return 'http://127.0.0.1:8000' + self.picture.url
+        return ''
+
 
 class Video(ItemBase):
     url = models.URLField()
