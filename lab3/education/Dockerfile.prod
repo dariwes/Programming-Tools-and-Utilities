@@ -35,12 +35,12 @@ COPY . education
 RUN mkdir -p education/web/media
 RUN mkdir -p education/web/static
 
-RUN adduser -D user
-RUN chown -R user:user education
-RUN chmod -R 755 education/web
-USER user
+#RUN adduser -D user
+#RUN chown -R user:user education
+#RUN chmod -R 755 education/web
+#USER user
 
 
 WORKDIR /usr/src/local/education
 
-ENTRYPOINT ["/entrypoint.sh"]
+#ENTRYPOINT ["/entrypoint.sh"]

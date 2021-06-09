@@ -143,6 +143,13 @@ LOGOUT_URL = 'logout'
 CRISPY_TEMPLATE_PACK = 'bootstrap'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'utils.email.EmailBackend'
+EMAIL_BACKEND_POOL_SIZE = 15
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'dariwes'
+EMAIL_HOST_PASSWORD = '123dfdje4o9i'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

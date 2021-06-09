@@ -1,4 +1,6 @@
 import logging
+
+from django.db import transaction
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
 from .models import Course, Subject
@@ -224,22 +226,19 @@ class CourseListView(TemplateResponseMixin, View):
         logger.info(message_ % (f'{self.request.user}',
                                 f'{self.__class__.__name__}',
                                 'get'))
-        # subjects = Subject.objects.annotate(
-        #     total_courses=Count('courses')
-        # )
         courses = Course.objects.annotate(
             total_modules=Count('modules')
         )
         if subject:
-            try:
-                subject = Subject.objects.get(slug=subject)
-                courses = courses.filter(subject=subject)
-            except Subject.DoesNotExist:
-                logger.warning(f'user: {self.request.user} | '
-                               f'no {subject} matches the given query')
-                return HttpResponse('Error', status=404)
-        return self.render_to_response({#'subjects': subjects,
-                                        'subject': subject,
+            with transaction.atomic():
+                try:
+                    subject = Subject.objects.get(slug=subject)
+                    courses = courses.filter(subject=subject)
+                except Subject.DoesNotExist:
+                    logger.warning(f'user: {self.request.user} | '
+                                   f'no {subject} matches the given query')
+                    return HttpResponse('Error', status=404)
+        return self.render_to_response({'subject': subject,
                                         'courses': courses})
 
 

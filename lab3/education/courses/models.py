@@ -8,7 +8,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from .fields import OrderField
 from users.models import UserProfile
 from django.template.loader import render_to_string
-from django.utils.safestring import mark_safe
 
 
 class Subject(models.Model):

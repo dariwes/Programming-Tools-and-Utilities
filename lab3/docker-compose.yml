@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   web:
-    build: ./education
+    image: dariwes/django_project:latest
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./education/:/usr/src/education/
