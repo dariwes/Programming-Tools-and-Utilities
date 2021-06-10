@@ -1,0 +1,15 @@
+name: Docker-Siries-Builds
+
+on:
+  push:
+    branches:
+    - django-project
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+    - uses: actions/checkout@django-project
+    - name: docker build django
+      run: |
+        docker build ./lab3/education -t dariwes/django-project:1.0.0
