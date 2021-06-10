@@ -52,21 +52,22 @@ class Course(models.Model):
 
     def get_image(self):
         if self.image:
-            return 'http://127.0.0.1:8000' + self.image.url
+            return self.image.url
         return ''
 
     def get_thumbnail(self):
         if self.thumbnail:
-            return 'http://127.0.0.1:8000' + self.thumbnail.url
+            return self.thumbnail.url
         else:
             if self.image:
                 self.thumbnail = self.make_thumbnail(self.image)
                 self.save()
-                return 'http://127.0.0.1:8000' + self.thumbnail.url
+                return self.thumbnail.url
             else:
                 return ''
 
-    def make_thumbnail(self, image, size=(300, 200)):
+    @staticmethod
+    def make_thumbnail(image, size=(300, 200)):
         img = Image.open(image)
         img.convert('RGB')
         img.thumbnail(size)
@@ -160,7 +161,7 @@ class Picture(ItemBase):
 
     def get_picture(self):
         if self.picture:
-            return 'http://127.0.0.1:8000' + self.picture.url
+            return self.picture.url
         return ''
 
 

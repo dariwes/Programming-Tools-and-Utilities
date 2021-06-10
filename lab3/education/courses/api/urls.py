@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
 
 app_name = 'courses'
@@ -16,6 +16,4 @@ urlpatterns = [
     path('course/<int:pk>/join/',
          views.CourseRegistrationView.as_view(),
          name='course_joined'),
-    path('djoser/auth/', include('djoser.urls')),
-    path('djoser/authtoken/', include('djoser.urls.authtoken')),
 ]

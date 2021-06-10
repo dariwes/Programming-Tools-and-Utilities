@@ -13,6 +13,6 @@ class ErrorMiddleware:
         return response
 
     def process_exception(self, request, exception):
-        logger = logging.getLogger(request.__name__)
+        logger = logging.getLogger(request)
         logger.error(str(exception))
-        return HttpResponse('Exception', status=404)
+        return HttpResponse('Exception')

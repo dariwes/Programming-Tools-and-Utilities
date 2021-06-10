@@ -10,6 +10,7 @@ media
 *.bak
 
 # If you are using PyCharm #
+.idea/
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
@@ -46,6 +47,10 @@ wheels/
 *.egg
 *.manifest
 *.spec
+package-lock.json
+education/education_vue/
+education/node_modules/
+
 
 # Installer logs
 pip-log.txt
