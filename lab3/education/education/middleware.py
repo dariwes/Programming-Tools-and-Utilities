@@ -1,4 +1,7 @@
 import logging
+import os
+import traceback
+
 from django.http import HttpResponse
 
 
@@ -13,6 +16,13 @@ class ErrorMiddleware:
         return response
 
     def process_exception(self, request, exception):
-        logger = logging.getLogger(request)
-        logger.error(str(exception))
-        return HttpResponse('Exception')
+        if not os.environ.get('DEBUG', default=0):
+            if exception:
+                message = '{url} | {error} | {tb}'.format(
+                    url=request.build_absolute_uri(),
+                    error=repr(exception),
+                    tb=traceback.format_exc()
+                )
+                logger = logging.getLogger(request)
+                logger.error(message)
+            return HttpResponse("Error processing the request.", status=500)
