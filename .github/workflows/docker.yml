@@ -32,7 +32,7 @@ jobs:
     - name: Up and build docker-compose
       run: docker-compose -f ./lab3/docker-compose.yml up -d
     - name: Run tests
-      run: docker-compose exec web pytest
+      run: docker-compose -f ./lab3/docker-compose.yml exec web pytest
     - name: Down docker-compose
       run: docker-compose -f ./lab3/docker-compose.yml down
 
