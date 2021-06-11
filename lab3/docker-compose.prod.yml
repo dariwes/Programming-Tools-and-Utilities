@@ -1,6 +1,7 @@
 version: '3.7'
 services:
   web:
+    container_name: django-web
     image: dariwes/django_project_prod:latest
     command: gunicorn education.wsgi:application --bind 0.0.0.0:8000 --reload
     volumes:
