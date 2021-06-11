@@ -17,22 +17,16 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Docker build education
+    - name: Build and run tests
       run: |
-        docker build ./lab3/education -t dariwes/django-project:latest  -f ./lab3/education/Dockerfile
+        docker build ./lab3/education -t dariwes/django_project_prod:latest  -f ./lab3/education/Dockerfile.prod
+        docker build ./lab3/nginx -t dariwes/nginx_project:latest  -f ./lab3/nginx/Dockerfile
+        docker-compose -f ./lab3/docker-compose.prod.yml up -d
+        docker ps -a
+        docker exec django-web pytest
+        docker-compose -f ./lab3/docker-compose.prod.yml down
     - name: Push to docker hub
       run: |
-        docker push dariwes/django-project:latest
-  run-tests:
-    name: Run tests
-    runs-on: ubuntu-latest
-    needs: [build-push-image]
-    steps:
-    - uses: actions/checkout@v2
-    - name: Up and build docker-compose
-      run: docker-compose -f ./lab3/docker-compose.yml up -d
-    - name: Run tests
-      run: docker-compose -f ./lab3/docker-compose.yml exec web pytest
-    - name: Down docker-compose
-      run: docker-compose -f ./lab3/docker-compose.yml down
+        docker push dariwes/django_project_prod:latest
+        docker push dariwes/nginx_project:latest
 
