@@ -6,7 +6,7 @@ on:
     - django-project
 
 jobs:
-  build-images:
+  build-push-image:
     name: Build and push docker images
     runs-on: [ubuntu-latest]
     steps:
@@ -23,3 +23,16 @@ jobs:
     - name: Push to docker hub
       run: |
         docker push dariwes/django-project:latest
+  run-tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    needs: [build-push-image]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Up and build docker-compose
+      run: docker-compose -f ./lab3/docker-compose.yml up -d
+    - name: Run tests
+      run: docker-compose exec web pytest
+    - name: Down docker-compose
+      run: docker-compose -f ./lab3/docker-compose.yml down
+
