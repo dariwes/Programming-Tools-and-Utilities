@@ -19,7 +19,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Docker build education
       run: |
-        docker build ./lab3/education -t dariwes/django-project:latest  -f Dockerfile
+        docker build ./lab3/education -t dariwes/django-project:latest  -f ./lab3/education/Dockerfile
     - name: Push to docker hub
       run: |
         docker push dariwes/django-project:latest
