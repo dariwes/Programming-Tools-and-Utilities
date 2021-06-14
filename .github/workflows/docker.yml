@@ -42,5 +42,4 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
       - name: Reload project
-        run: gcloud compute ssh supersonic@django-project --zone=us-central1-a \
-          --command="cd app/Programming-Tools-and-Utilities/lab3 && sudo docker-compose -f docker-compose.prod.yml up -d"
+        run: gcloud compute ssh supersonic@django-project --zone=us-central1-a --command="sudo docker-compose -f app/Programming-Tools-and-Utilities/lab3/docker-compose.prod.yml up -d"
