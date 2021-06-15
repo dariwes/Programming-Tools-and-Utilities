@@ -2,7 +2,7 @@ version: '3.7'
 services:
   web:
     container_name: django-web
-    image: dariwes/django_project_prod:latest
+    image: dariwes/django_project_prod:v1.0
     command: gunicorn education.wsgi:application --bind 0.0.0.0:8000 --reload
     volumes:
       - static_volume:/usr/src/local/education/web/static
@@ -20,7 +20,7 @@ services:
     env_file:
       - ./.env.prod.db
   nginx:
-    image: dariwes/nginx_project:latest
+    image: dariwes/nginx_project:v1.0
     volumes:
       - static_volume:/usr/src/local/education/web/static
       - media_volume:/usr/src/local/education/web/media
