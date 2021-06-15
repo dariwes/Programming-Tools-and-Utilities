@@ -26,7 +26,6 @@ INSTALLED_APPS = [
 
     'crispy_forms',
     'embed_video',
-    # 'djoser',
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
@@ -130,7 +129,6 @@ MEDIA_ROOT = os.environ.get("MEDIA_ROOT")
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    '/var/www/static/',
 ]
 
 
