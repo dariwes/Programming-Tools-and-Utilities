@@ -17,10 +17,41 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+    - name: Build Django Project
+      uses: docker/build-push-action@v2
+      with:
+        context: ./lab3/education
+        file: Dockerfile.prod
+        push: false
+        tags: dariwes/django_project_prod:v1.0
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache-new
+    - name: Build Nginx
+      uses: docker/build-push-action@v2
+      with:
+        context: ./lab3/nginx
+        file: Dockerfile
+        push: false
+        tags: dariwes/nginx_project:v1.0
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache-new
+    - name: Move cache
+      run: |
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
     - name: Build and Run tests
       run: |
-        docker build ./lab3/education -t dariwes/django_project_prod:v1.0 -f ./lab3/education/Dockerfile.prod
-        docker build ./lab3/nginx -t dariwes/nginx_project:v1.0 -f ./lab3/nginx/Dockerfile
+#        docker build ./lab3/education -t dariwes/django_project_prod:v1.0 -f ./lab3/education/Dockerfile.prod
+#        docker build ./lab3/nginx -t dariwes/nginx_project:v1.0 -f ./lab3/nginx/Dockerfile
         docker-compose -f ./lab3/docker-compose.prod.yml up -d
         docker exec django-web pytest
         docker-compose -f ./lab3/docker-compose.prod.yml down
