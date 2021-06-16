@@ -10,17 +10,17 @@
                     <ul id="modules">
                         {% for m in object.modules.all %}
                             <li data-id="{{ m.id }}" {% if m == module %}class="selected" {% endif %}>
-                                <a class="list-group-item list-group-item-action list-group-item-secondary" href="{% url 'user_course_detail_module' object.id m.id %}">
+                                <a class="" href="{% url 'user_course_detail_module' object.id m.id %}">
                                     Модуль <span class="order">{{ m.order|add:1 }}</span><br>{{ m.title }}
                                 </a>
-                            </li>
+                            </li><hr>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
               <div class="col-8">
                 <div class="container bg-dark rounded m-3 p-5 text-center">
-                <h1> <strong> {{ module.title }} </strong></h1>
+                <h1> <strong> {{ module.title }} </strong></h1><hr>
                 {% for content in module.contents.all %}
                     {% with item=content.item %}
                         <h2>{{ item.title }}</h2>

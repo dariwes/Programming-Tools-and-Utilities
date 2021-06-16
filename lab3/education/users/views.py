@@ -20,7 +20,7 @@ message_ = '| user: %s | used: %s | method: %s'
 class SignUpView(generic.CreateView):
     template_name = 'users/signup.html'
     form_class = UserProfileCreationForm
-    success_url = reverse_lazy('user_course_list')
+    success_url = reverse_lazy('course_list')
 
     def post(self, request, *args, **kwargs):
         form = UserProfileCreationForm(request.POST)

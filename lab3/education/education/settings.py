@@ -132,7 +132,7 @@ STATICFILES_DIRS = [
 ]
 
 
-LOGIN_REDIRECT_URL = reverse_lazy('user_course_list')
+LOGIN_REDIRECT_URL = reverse_lazy('course_list')
 
 LOGIN_URL = 'login'
 
@@ -140,7 +140,6 @@ LOGOUT_URL = 'logout'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'utils.email.EmailBackend'
 EMAIL_BACKEND_POOL_SIZE = 15
 EMAIL_HOST = 'smtp.sendgrid.net'
